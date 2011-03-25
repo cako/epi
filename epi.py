@@ -55,9 +55,9 @@
 
 from __future__ import division
 from cmath import *
-from numpy import fft, array
+import numpy
 from sympy import *
-import matplotlib
+import matplotlib.pylab as plt
 
 # Predefined examples
 batman = [4.05+20.85j, 6.75+26.4j, 6.45+18.15j, 9.3+9.9j, 15.75+8.4j, 22.05+9.6j, 27.9+16.35j, 27.45+25.35j, 38.4+20.7j, 47.25+14.25j, 53.25+6.45j, 55.95-2.85j, 54-11.25j, 48.6-19.5j, 42.6-24.15j, 35.4-27.45j, 40.95-21.15j, 43.65-15.45j, 43.5-10.35j, 41.85-5.7j, 39-4.5j, 35.55-4.8j, 31.95-9.45j, 29.1-16.2j, 29.25-10.95j, 28.35-7.35j, 25.5-5.55j, 21.45-5.1j, 14.85-9.15j, 8.85-14.85j, 4.5-21.3j, -33.45j, -4.5-21.3j, -8.85-14.85j, -14.85-9.15j, -21.45-5.1j, -25.5-5.55j, -28.35-7.35j, -29.25-10.95j, -29.1-16.2j, -31.95-9.45j, -35.55-4.8j, -39-4.5j, -41.85-5.7j, -43.5-10.35j, -43.65-15.45j, -40.95-21.15j, -35.4-27.45j, -42.6-24.15j, -48.6-19.5j, -54-11.25j, -55.95-2.85j, -53.25+6.45j, -47.25+14.25j, -38.4+20.7j, -27.45+25.35j, -27.9+16.35j, -22.05+9.6j, -15.75+8.4j, -9.3+9.9j, -6.45+18.15j, -6.75+26.4j, -4.05+20.85j, 20.85j]
@@ -78,6 +78,19 @@ def enterlist():
             print '\nWrong format for list, try again.'
     return lista
 
+def plot(f,N,title): 
+    z = Symbol("z")
+    step = 0.05 #3.14/(20*log(N))
+    sampl_f = map(lambda k: f.subs(z,k),numpy.arange(0,2*numpy.pi+step,step))
+    plotpts = len(sampl_f)
+    sampl_x = map(lambda k: re(sampl_f[k].expand(complex=True)),range(0,plotpts))
+    sampl_y = map(lambda k: im(sampl_f[k].expand(complex=True)),range(0,plotpts))
+    plt.title(title)
+    plt.plot(sampl_x,sampl_y)
+    print "Gerando imagem"
+    plt.show()
+    
+
 def main():  
     print 'Choose one of the options:'
     print '\n    (1) Enter your own points,'
@@ -85,7 +98,7 @@ def main():
     print '\n    (2) Batman (64 points);'
     print '    (3) Nike (13 points);'
     print '    (4) Mickey (16 points);'
-    print '    (5) Pizza without a slice (8 points).'
+    print '    (5) Pizza Without a Slice (8 points).'
     print '\nEnter any key to exit.'
     choice = raw_input()
     if choice == str(1):
@@ -98,23 +111,23 @@ def main():
         print ' Visit http://docs.python.org/library/cmath.htm for more information.'
         print ' Note that this feature is still experimental and may not work properly.\n'
         pts = enterlist()
-        nome = raw_input('Figure title: ')
+        title = raw_input('Figure title: ')
     elif choice == str(2):
-        nome = 'Batman'
+        title = 'Batman'
         pts = batman
     elif choice== str(3):
-        nome = 'Nike'
+        title = 'Nike'
         pts = nike
     elif choice == str(4):
-        nome = 'Mickey'
+        title = 'Mickey'
         pts = mickey
     elif choice == str(5):
-        nome = 'Pizza without a slice'
+        title = 'Pizza without a slice'
         pts = pizza
     else:
         return 1
     N = len(pts)
-    coefs = fft.fft(array(pts))
+    coefs = numpy.fft.fft(numpy.array(pts))
     z = Symbol("z")
 
     # The k is mapped to the positive and negative powers of exp, respectively.
@@ -124,14 +137,18 @@ def main():
 
     # The first part of the function is the summation of the positive powers of exp, and the last part is the summation of the negative powers.
     first = Add(*map(pos_terms, range(0,N//2 + 1)))
-    last = Add(*map(neg_terms, range(N//2 + 1,N)))
+    last  = Add(*map(neg_terms, range(N//2 + 1,N)))
     #print first
     #print last
     #print ''
 
     # The function C^2 -> C^2 that graphs the orbit is finally scaled.
+    f = Function("f")
     f = Add(first, last)/N
-    print f
-    Plot(re(f.expand(complex=True)),im(f.expand(complex=True)), [z,0,2*3.14156],'mode=parametric')
+    #print f
+    
+    # Plot
+    plot(f,N,title)
+
 
 main()
