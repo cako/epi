@@ -40,7 +40,7 @@
 #                                                                               #
 #      OPTIONS:  None that I'm aware of!                                        #
 #                                                                               #
-# REQUIREMENTS:  python 2.6, numpy, sympy                                       #
+# REQUIREMENTS:  python 2.6, numpy, sympy , matplotlib                          #
 #         BUGS:  * When entering the list <C-c> does not quit the program       #
 #                * Plot window not properly fit (might use matplotlib)          #
 #        NOTES:  ---                                                            #
