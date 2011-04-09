@@ -39,16 +39,15 @@
 #                                                                               #
 #                More information on the trigonometric interpolation polynomial #
 #                can be found here:                                             #
-#                http://en.wikipedia.org/wiki/Discrete_Fourier_transform#Trigonometric_interpolation_polynomial
+#                http://en.wikipedia.org/wiki/Trigonometric_interpolation_polynomial
 #                                                                               #
 #      OPTIONS:  None that I'm aware of!                                        #
 #                                                                               #
-# REQUIREMENTS:  python 2.6, numpy, sympy, matplotlib                           #
+# REQUIREMENTS:  python 2.6, numpy, matplotlib                                  #
 #         BUGS:  * When entering the list <C-c> does not quit the program       #
-#                * Plot window not properly fit (might use matplotlib)          #
 #        NOTES:  ---                                                            #
 #       AUTHOR:  Carlos Alberto da Costa Filho, c.dacostaf (gmail)              #
-#      VERSION:  0.1                                                            #
+#      VERSION:  0.2                                                            #
 #      CREATED:  Thu Mar 24 22:12:07 BRT 2011                                   #
 #     REVISION:  ---                                                            #
 #===============================================================================#
@@ -56,10 +55,7 @@
 from __future__ import division
 from cmath import *
 import numpy
-from sympy import *
 import matplotlib.pylab as plt
-from os import system
-import time
 
 # Predefined examples
 batman = [4.05+20.85j, 6.75+26.4j, 6.45+18.15j, 9.3+9.9j, 15.75+8.4j, 22.05+9.6j, 27.9+16.35j, 27.45+25.35j, 38.4+20.7j, 47.25+14.25j, 53.25+6.45j, 55.95-2.85j, 54-11.25j, 48.6-19.5j, 42.6-24.15j, 35.4-27.45j, 40.95-21.15j, 43.65-15.45j, 43.5-10.35j, 41.85-5.7j, 39-4.5j, 35.55-4.8j, 31.95-9.45j, 29.1-16.2j, 29.25-10.95j, 28.35-7.35j, 25.5-5.55j, 21.45-5.1j, 14.85-9.15j, 8.85-14.85j, 4.5-21.3j, -33.45j, -4.5-21.3j, -8.85-14.85j, -14.85-9.15j, -21.45-5.1j, -25.5-5.55j, -28.35-7.35j, -29.25-10.95j, -29.1-16.2j, -31.95-9.45j, -35.55-4.8j, -39-4.5j, -41.85-5.7j, -43.5-10.35j, -43.65-15.45j, -40.95-21.15j, -35.4-27.45j, -42.6-24.15j, -48.6-19.5j, -54-11.25j, -55.95-2.85j, -53.25+6.45j, -47.25+14.25j, -38.4+20.7j, -27.45+25.35j, -27.9+16.35j, -22.05+9.6j, -15.75+8.4j, -9.3+9.9j, -6.45+18.15j, -6.75+26.4j, -4.05+20.85j, 20.85j]
@@ -80,27 +76,6 @@ def enterlist():
             print '\nWrong format for list, try again.'
     return lista
       
-def generate_f(pts):
-    N = len(pts)
-    coefs = numpy.fft.fft(numpy.array(pts))
-    z = Symbol("z")
-
-    # The k is mapped to the positive and negative powers of exp, respectively.
-    # Note that some implementations of the fft gives the order differently. I had to use examples to figure out how this one worked.
-    pos_terms = lambda k: exp(k*I*z)*coefs[k]
-    neg_terms = lambda k: exp((k-N)*I*z)*coefs[k]
-
-    # The first part of the function is the summation of the positive powers of exp, and the last part is the summation of the negative powers.
-    first = Add(*map(pos_terms, range(0,N//2 + 1)))
-    last  = Add(*map(neg_terms, range(N//2 + 1,N)))
-    #print first
-    #print last
-    #print ''
-
-    return Add(first, last)/N
- 
-
-
 def main():
     system('clear')  
     print """
@@ -142,46 +117,22 @@ Enter any key to exit.
     else:
         return 1
 
-    # We generate a trigonometric interpolation polinomial based on the inputted points
-    f = Function("f")
-    z = Symbol("z")
-    f = generate_f(pts)
-    #print f
+    N = len(pts)
+    coefs = numpy.fft.fft(numpy.array(pts))
+    step = 0.01
+    samples = numpy.arange(0,2*numpy.pi+step,step)
     
-    # Matplotlib takes too long, choosing sympy for now
-    plot_type = 0
-
-    print "\nGererating plot..."
-    # Matplotlib's Pyplot                                                                       
-    if plot_type == 0: 
-        step = 0.03 #3.14/(20*log(N))
-        t = time.time()
-        
-        sampl_f = map(lambda k: f.subs(z,k),numpy.arange(0,2*numpy.pi+step,step))
-        tf = time.time()
-        print "%.3f" % (tf - t)
-        
-        plotpts = len(sampl_f)
-        
-        sampl_f_complex = map(lambda k: sampl_f[k].expand(complex=True),xrange(0,plotpts)) 
-        tfc = time.time()
-        print "%.3f" % (tfc - tf)
-        
-        sampl_x = map(lambda k: re(sampl_f_complex[k]),xrange(0,plotpts))
-        tx = time.time()
-        print "%.3f" % (tx-tfc)
-        
-        sampl_y = map(lambda k: im(sampl_f_complex[k]),xrange(0,plotpts))
-        ty = time.time()
-        print "%.3f" % (ty-tx)
-        
-        plt.title(title)
-        plt.plot(sampl_x,sampl_y)
-        print "%.3f" % (time.time() - t)
-        #plt.show()
-    # Sympy's Plot
-    else:
-        t = time.time() 
-        Plot(re(f.expand(complex=True)),im(f.expand(complex=True)), [z,0,2*3.14156],'mode=parametric')
-        print "%.3f" % (time.time() - t)
+    def f(z):
+        F = coefs[0]
+        for k in xrange(1,N//2+1):
+            F += numpy.exp(k*1j*z)*coefs[k]
+        for k in xrange(N//2+1,N):
+            F += numpy.exp((k-N)*1j*z)*coefs[k]
+        return F
+    
+    sampled_f = f(samples)
+    myplot = plt.plot(numpy.real(sampled_f),numpy.imag(sampled_f))
+    plt.title(title)
+    plt.setp(myplot,aa=True)
+    plt.show()      
 main()
