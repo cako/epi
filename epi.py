@@ -131,6 +131,6 @@ def main():
     # The function C^2 -> C^2 that graphs the orbit is finally scaled.
     f = Add(first, last)/N
     print f
-    Plot(re(f.expand(complex=True)),im(f.expand(complex=True)), [z,0,2*3.14156],'mode=parametric')
+    Plot(re(f.expand(complex=True)),im(f.expand(complex=True)), [z,0,2*3.14156,200],'mode=parametric')
 
 main()
