@@ -58,6 +58,8 @@ from cmath import *
 import numpy
 from sympy import *
 import matplotlib.pylab as plt
+from os import system
+import time
 
 # Predefined examples
 batman = [4.05+20.85j, 6.75+26.4j, 6.45+18.15j, 9.3+9.9j, 15.75+8.4j, 22.05+9.6j, 27.9+16.35j, 27.45+25.35j, 38.4+20.7j, 47.25+14.25j, 53.25+6.45j, 55.95-2.85j, 54-11.25j, 48.6-19.5j, 42.6-24.15j, 35.4-27.45j, 40.95-21.15j, 43.65-15.45j, 43.5-10.35j, 41.85-5.7j, 39-4.5j, 35.55-4.8j, 31.95-9.45j, 29.1-16.2j, 29.25-10.95j, 28.35-7.35j, 25.5-5.55j, 21.45-5.1j, 14.85-9.15j, 8.85-14.85j, 4.5-21.3j, -33.45j, -4.5-21.3j, -8.85-14.85j, -14.85-9.15j, -21.45-5.1j, -25.5-5.55j, -28.35-7.35j, -29.25-10.95j, -29.1-16.2j, -31.95-9.45j, -35.55-4.8j, -39-4.5j, -41.85-5.7j, -43.5-10.35j, -43.65-15.45j, -40.95-21.15j, -35.4-27.45j, -42.6-24.15j, -48.6-19.5j, -54-11.25j, -55.95-2.85j, -53.25+6.45j, -47.25+14.25j, -38.4+20.7j, -27.45+25.35j, -27.9+16.35j, -22.05+9.6j, -15.75+8.4j, -9.3+9.9j, -6.45+18.15j, -6.75+26.4j, -4.05+20.85j, 20.85j]
@@ -69,7 +71,7 @@ def enterlist():
     format = False
     while (format == False):
         try:
-            lista = input()
+            lista = input("> ")
             if type(lista) == type([]):
                 format = True
             else:
@@ -77,55 +79,8 @@ def enterlist():
         except:
             print '\nWrong format for list, try again.'
     return lista
-
-def plot(f,N,title): 
-    z = Symbol("z")
-    step = 0.05 #3.14/(20*log(N))
-    sampl_f = map(lambda k: f.subs(z,k),numpy.arange(0,2*numpy.pi+step,step))
-    plotpts = len(sampl_f)
-    sampl_x = map(lambda k: re(sampl_f[k].expand(complex=True)),range(0,plotpts))
-    sampl_y = map(lambda k: im(sampl_f[k].expand(complex=True)),range(0,plotpts))
-    plt.title(title)
-    plt.plot(sampl_x,sampl_y)
-    print "Gerando imagem"
-    plt.show()
-    
-
-def main():  
-    print 'Choose one of the options:'
-    print '\n    (1) Enter your own points,'
-    print '\nor choose one of the examples below:'
-    print '\n    (2) Batman (64 points);'
-    print '    (3) Nike (13 points);'
-    print '    (4) Mickey (16 points);'
-    print '    (5) Pizza Without a Slice (8 points).'
-    print '\nEnter any key to exit.'
-    choice = raw_input()
-    if choice == str(1):
-        print '\nPlease input your coordinates in the following format:'
-        print '     [x_1 + y_1j, x_2 + y_2j, ... ,x_n + y_nj]'
-        print ' Where the Cartesian coordinates of the points are (x_i,y_i) for 1≤i≤n.'
-        print ' Note that the imaginary unit 1j, so the coordinate (1,1) would be written 1+1j,'
-        print ' but the coordinate (3,2) would be written 3+2j.'
-        print '\nStandard mathematical notation follows that of the library cmath.'
-        print ' Visit http://docs.python.org/library/cmath.htm for more information.'
-        print ' Note that this feature is still experimental and may not work properly.\n'
-        pts = enterlist()
-        title = raw_input('Figure title: ')
-    elif choice == str(2):
-        title = 'Batman'
-        pts = batman
-    elif choice== str(3):
-        title = 'Nike'
-        pts = nike
-    elif choice == str(4):
-        title = 'Mickey'
-        pts = mickey
-    elif choice == str(5):
-        title = 'Pizza without a slice'
-        pts = pizza
-    else:
-        return 1
+      
+def generate_f(pts):
     N = len(pts)
     coefs = numpy.fft.fft(numpy.array(pts))
     z = Symbol("z")
@@ -142,13 +97,91 @@ def main():
     #print last
     #print ''
 
-    # The function C^2 -> C^2 that graphs the orbit is finally scaled.
+    return Add(first, last)/N
+ 
+
+
+def main():
+    system('clear')  
+    print """
+Choose one of the options:\n
+    (1) Enter your own points,\n
+or choose one of the examples below:\n
+    (2) Batman (64 points);
+    (3) Nike (13 points);
+    (4) Mickey (16 points);
+    (5) Pizza Without a Slice (8 points).\n
+Enter any key to exit.
+    """
+    choice = raw_input("> ")
+    if choice == str(1):
+        print """
+    Please input your coordinates in the following format:
+    [x_1 + y_1j, x_2 + y_2j, ... ,x_n + y_nj]
+    Where the Cartesian coordinates of the points are (x_i,y_i) for 1≤i≤n.
+    Note that the imaginary unit 1j, so the coordinate (1,1) would be written 1+1j,
+    but the coordinate (3,2) would be written 3+2j.\n
+    Standard mathematical notation follows that of the library cmath.
+    Visit http://docs.python.org/library/cmath.htm for more information.
+    Note that this feature is still experimental and may not work properly.\n
+"""
+        pts = enterlist()
+        title = raw_input('Figure title: ')
+    elif choice == str(2):
+        title = 'Batman'
+        pts = batman
+    elif choice == str(3):
+        title = 'Nike'
+        pts = nike
+    elif choice == str(4):
+        title = 'Mickey'
+        pts = mickey
+    elif choice == str(5):
+        title = 'Pizza without a slice'
+        pts = pizza
+    else:
+        return 1
+
+    # We generate a trigonometric interpolation polinomial based on the inputted points
     f = Function("f")
-    f = Add(first, last)/N
+    z = Symbol("z")
+    f = generate_f(pts)
     #print f
     
-    # Plot
-    plot(f,N,title)
+    # Matplotlib takes too long, choosing sympy for now
+    plot_type = 0
 
-
+    print "\nGererating plot..."
+    # Matplotlib's Pyplot                                                                       
+    if plot_type == 0: 
+        step = 0.03 #3.14/(20*log(N))
+        t = time.time()
+        
+        sampl_f = map(lambda k: f.subs(z,k),numpy.arange(0,2*numpy.pi+step,step))
+        tf = time.time()
+        print "%.3f" % (tf - t)
+        
+        plotpts = len(sampl_f)
+        
+        sampl_f_complex = map(lambda k: sampl_f[k].expand(complex=True),xrange(0,plotpts)) 
+        tfc = time.time()
+        print "%.3f" % (tfc - tf)
+        
+        sampl_x = map(lambda k: re(sampl_f_complex[k]),xrange(0,plotpts))
+        tx = time.time()
+        print "%.3f" % (tx-tfc)
+        
+        sampl_y = map(lambda k: im(sampl_f_complex[k]),xrange(0,plotpts))
+        ty = time.time()
+        print "%.3f" % (ty-tx)
+        
+        plt.title(title)
+        plt.plot(sampl_x,sampl_y)
+        print "%.3f" % (time.time() - t)
+        #plt.show()
+    # Sympy's Plot
+    else:
+        t = time.time() 
+        Plot(re(f.expand(complex=True)),im(f.expand(complex=True)), [z,0,2*3.14156],'mode=parametric')
+        print "%.3f" % (time.time() - t)
 main()
