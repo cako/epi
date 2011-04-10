@@ -55,6 +55,7 @@
 from __future__ import division
 from cmath import *
 import numpy
+import sympy
 import matplotlib.pylab as plt
 
 # Predefined examples
@@ -77,7 +78,6 @@ def enterlist():
     return lista
       
 def main():
-    system('clear')  
     print """
 Choose one of the options:\n
     (1) Enter your own points,\n
@@ -129,10 +129,32 @@ Enter any key to exit.
         for k in xrange(N//2+1,N):
             F += numpy.exp((k-N)*1j*z)*coefs[k]
         return F
+
     
     sampled_f = f(samples)
     myplot = plt.plot(numpy.real(sampled_f),numpy.imag(sampled_f))
     plt.title(title)
-    plt.setp(myplot,aa=True)
     plt.show()      
+    
+    def generatef():
+        z = sympy.Symbol("z")
+        # The k is mapped to the positive and negative powers of exp, respectively.
+        # Note that some implementations of the fft gives the order differently. I had to use examples to figure out how this one worked.
+        pos_terms = lambda k: sympy.exp(k*sympy.I*z)*coefs[k]
+        neg_terms = lambda k: sympy.exp((k-N)*sympy.I*z)*coefs[k]
+
+        # The first part of the function is the summation of the positive powers of exp, and the last part is the summation of the negative powers.
+        first = sympy.Add(*map(pos_terms, range(0,N//2 + 1)))
+        last = sympy.Add(*map(neg_terms, range(N//2 + 1,N)))
+
+        # The function C^2 -> C^2 that graphs the orbit is finally scaled.
+        f = sympy.Add(first, last)/N
+        print "f(z) = ", f,
+
+    print "\nWould you like to display f(z) (y/n)? "
+    if(raw_input("> ") == 'y'):
+        generatef()
+
+        
+
 main()
