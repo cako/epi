@@ -1,50 +1,51 @@
-#===============================================================================#
-#                                                                               #
-#   Copyright 2011 Carlos Alberto da Costa Filho                                #
-#                                                                               #
-#   This program is free software: you can redistribute it and/or modify        #
-#   it under the terms of the GNU General Public License as published by        #
-#   the Free Software Foundation, either version 3 of the License, or           #
-#   (at your option) any later version.                                         #
-#                                                                               #
-#   This program is distributed in the hope that it will be useful,             #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-#   GNU General Public License for more details.                                #
-#                                                                               #
-#   You should have received a copy of the GNU General Public License           #
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
-#                                                                               #
-#===============================================================================#
-#                                                                               #
-#         FILE:  epi.py                                                         #
-#                                                                               #
-#        USAGE:  ./epi.py                                                       #
-#                python epi.py                                                  #
-#                                                                               #
-#  DESCRIPTION:  This is a little script I wrote when I was first learning      #
-#                about Fourier series and transforms.                           #
-#                                                                               #
-#                It's purpose is to use the DFT in order to generate a curve    #
-#                interpolates it's points in a smooth way.                      #
-#                The user can enter the points to be interpolated manually or   #
-#                choose from a list of examples. The program then calculates    #
-#                the trigonometric polynomial using the values obtained from    #
-#                the DFT. Finally, by plotting a parametric curve given by the  #
-#                real and the imaginary parts of the polynomial, we can graph   #
-#                the curve in 2D.                                               #
-#                                                                               #
-#                More information on the trigonometric interpolation polynomial #
-#                can be found here:                                             #
-#           http://en.wikipedia.org/wiki/Trigonometric_interpolation_polynomial #
-#                                                                               #
-#      OPTIONS:  None that I'm aware of!                                        #
-#                                                                               #
-# REQUIREMENTS:  python 2.6, numpy, matplotlib                                  #
-#         BUGS:  * When entering the list <C-c> does not quit the program       #
-#        NOTES:  ---                                                            #
-#       AUTHOR:  Carlos Alberto da Costa Filho, c.dacostaf (gmail)              #
-#      VERSION:  0.2                                                            #
-#      CREATED:  Thu Mar 24 22:12:07 BRT 2011                                   #
-#     REVISION:  ---                                                            #
-#===============================================================================#
+#==============================================================================#
+#                                                                              #
+#   Copyright 2011 Carlos Alberto da Costa Filho                               #
+#                                                                              #
+#   This program is free software: you can redistribute it and/or modify       #
+#   it under the terms of the GNU General Public License as published by       #
+#   the Free Software Foundation, either version 3 of the License, or          #
+#   (at your option) any later version.                                        #
+#                                                                              #
+#   This program is distributed in the hope that it will be useful,            #
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of             #
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              #
+#   GNU General Public License for more details.                               #
+#                                                                              #
+#   You should have received a copy of the GNU General Public License          #
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.      #
+#                                                                              #
+#==============================================================================#
+#                                                                              #
+#        FILES:  main.py                                                       #
+#                epi_examples.py                                               #
+#                                                                              #
+#        USAGE:  ./main.py                                                     #
+#                python main.py                                                #
+#                                                                              #
+#  DESCRIPTION:  This is a little script I wrote when I was first learning     #
+#                about Fourier series and transforms.                          #
+#                                                                              #
+#                It's purpose is to use the DFT in order to generate a curve   #
+#                interpolates it's points in a smooth way.                     #
+#                The user can enter the points to be interpolated manually or  #
+#                choose from a list of examples. The program then calculates   #
+#                the trigonometric polynomial using the values obtained from   #
+#                the DFT. Finally, by plotting a parametric curve given by the #
+#                real and the imaginary parts of the polynomial, we can graph  #
+#                the curve in 2D.                                              #
+#                                                                              #
+#                More information on the trigonometric interpolation           #
+#                polynomial can be found here:                                 #
+#           http://en.wikipedia.org/wiki/Trigonometric_interpolation_polynomial#
+#                                                                              #
+#      OPTIONS:  Just rewrote it. Be careful!                                  #
+#                                                                              #
+# REQUIREMENTS:  python 2.6, numpy, matplotlib, sympy (will be optional)       #
+#         BUGS:  * When entering the list <C-c> does not quit the program      #
+#        NOTES:  ---                                                           #
+#       AUTHOR:  Carlos Alberto da Costa Filho, c.dacostaf (gmail)             #
+#      VERSION:  0.3                                                           #
+#      CREATED:  Thu Mar 24 22:12:07 BRT 2011                                  #
+#     REVISION:  ---                                                           #
+#==============================================================================#
