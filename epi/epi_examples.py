@@ -3,7 +3,7 @@
 to generate a random list.
 """
 
-import random
+from random import randint, random
 import numpy
 
 BATMAN_LIST = [4.05 + 20.85j,   6.75 + 26.4j ,   6.45 + 18.15j,  9.3   +  9.9j ,
@@ -45,8 +45,8 @@ def random_list():
     Generates and outputs a random list ordered in a counterclockwise
     fashion about the origin.
     """
-    N = random.randint(10, 101)
-    lista = [ N * (random.random()-0.5+1j*(random.random()-0.5))
+    N = randint(10, 101)
+    lista = [ N * (random() - 0.5 + 1j * (random() - 0.5))
             for k in range(0,N)]
     lista_upper = []
     lista_lower = []

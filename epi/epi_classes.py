@@ -8,9 +8,10 @@ import sympy
 import pylab
 import epi_examples
 
+# Figura Class
 class Figura (object):
     """
-    This class represents a figure. a figure is composed of a list that
+    This class represents a figure. A figure is composed of a list that
     represents it's points on the plane, a name. Various methods can be
     called, such as one to plot the list and an orbit around the points,
     calculated using the trigonometric polynomial.
@@ -143,33 +144,71 @@ class Figura (object):
         myplots.legend((r'$f(z)$', 'Points'), 'upper center', shadow=True)
         myplots.set_title(self.title)
         pylab.show()
+# End of Figura Class
 
+# Built in Functions
+def input_from_terminal():
+    """
+    Enter list manually. The input list should be composed of the
+    coordinates of each point in python complex form. The points
+    (1,1) and (0,2) should be entered as [1+1j,2j]
+    """
+    formato = False
+    while (formato == False):
+        try:
+            # Possible security problem. Must curcumvent using input.
+            lista = input("> ")
+            if type(lista) == type([]):
+                formato = True
+            else:
+                print '\nWrong format for list, try again.'
+        except:
+            print '\nWrong format for list, try again.'
+    return lista
+
+def input_from_file(filename):
+    """
+    Enter list from file. The input file should be composed of two columns,
+    representing the x and y coordinates of each point. The points (1,1)
+    and (0,2) would be represented as:
+    1 1
+    0 2
+    """
+    try:
+        file_handle = open(filename,'r')
+    except IOError:
+        print 'Could not open the file'
+        return None
+    
+    lines = file_handle.readlines()
+    lista = []
+    for line in lines:
+        # This will turn '1 1' in ['1', '1']
+        coords = line.strip().split()
+        try:
+            # This will turn ['1', '1'] in 1+1j
+            lista.append(float(coords[0]) + complex(coords[1] + 'j'))
+        except IndexError:
+            # Happens if line does not have enough columns
+            lista.append(float(coords[0]))
+        except ValueError:
+            print "Badly formatted line. Only numbers!"
+    return lista
+# End of Built in Functions
+
+# TerminalMain Class
 class TerminalMain (object):
     """ Comprises a runtime os the program through the terminal. """
     def __init__ (self):
         """ Initialize the TerminalMain class. """
         pass
     
-    def input_from_terminal(self):
-        """ Enter list manually. """
-        formato = False
-        while (formato == False):
-            try:
-                # Possible security problem. Must curcumvent using input.
-                lista = input("> ")
-                if type(lista) == type([]):
-                    formato = True
-                else:
-                    print '\nWrong format for list, try again.'
-            except:
-                print '\nWrong format for list, try again.'
-        return lista
-    
     def run(self):
         """ Effectively runs the program through the terminal. """
         print """
 Choose one of the options:\n
-    (1) Enter your own points,\n
+    (1a) Enter your own points from the terminal,\n
+    (1b) Enter your own points from a file,\n
 or choose one of the examples below:\n
     (2) Batman (64 points);
     (3) Nike (13 points);
@@ -180,7 +219,7 @@ or choose one of the examples below:\n
 Enter any key to exit.
 """
         choice = raw_input("> ")
-        if choice == str(1):
+        if choice == '1a':
             print """
 Please input your coordinates in the following format:
 [x_1 + y_1j, x_2 + y_2j, ... ,x_n + y_nj]
@@ -188,7 +227,13 @@ Where the Cartesian coordinates of the points are (x_i,y_i) for 1≤i≤n.
 Note that the imaginary unit 1j, so the coordinate (1,1) would be written 1+1j,
 but the coordinate (3,2) would be written 3+2j.\n
 """
-            pts = self.input_from_terminal()
+            pts = input_from_terminal()
+            title = raw_input('Figure title: ')
+        elif choice == '1b':
+            print """ Your file must be formatted with the first column as the
+x axis, and the second column as the y axis. Each line represents a point.\n
+"""
+            pts = input_from_file(raw_input('File name: '))
             title = raw_input('Figure title: ')
         elif choice == str(2):
             title = 'Batman'
@@ -222,3 +267,4 @@ but the coordinate (3,2) would be written 3+2j.\n
             return 0
         else:
             return -1
+# End of TerminalMain Class
